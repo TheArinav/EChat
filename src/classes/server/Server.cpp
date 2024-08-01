@@ -222,7 +222,7 @@ namespace src::classes::server {
             stringstream ss_log{};
             stringstream ss_data(request->Data);
             ClientActionType responseType;
-            function<bool(shared_ptr<Account>, Hash, string)> verifyIdentity = [=](
+            function<bool(shared_ptr<Account>, Hash, string)> verifyIdentity = [this](
                     const shared_ptr<Account> &accIn,
                     Hash _id, const string &_key) -> bool {
                 {
