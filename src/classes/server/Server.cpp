@@ -1,7 +1,7 @@
 #include "Server.h"
 
 #include <utility>
-
+#include <functional>
 
 namespace src::classes::server {
     Server::Server() {
@@ -80,7 +80,8 @@ namespace src::classes::server {
                                     } else {
                                         string buff = string(client->ReadBuffer.begin(), client->ReadBuffer.end());
                                         auto curReq = make_shared<ServerRequest>(ServerRequest::Deserialize(buff));
-                                        PushRequest(-1,curReq);
+                                        auto requesterID = client->ID;
+                                        PushRequest(requesterID, curReq);
                                     }
                                     continue;
                                 }
@@ -171,7 +172,195 @@ namespace src::classes::server {
     }
 
     void Server::EnactRespond() {
+        function<bool()> isRequestsEmpty = [this]() -> bool {
+            {
+                lock_guard<mutex> guard(*m_Requests);
+                return Requests.empty();
+            }
+        };
+        while (!isRequestsEmpty()) {
+            //region Setup
+            auto current = PopRequest();
+            Hash ConnectionID = get<0>(current);
+            shared_ptr<Account> requester = nullptr;
+            bool isGuest = false;
+            shared_ptr<Client> connection = nullptr;
+            function<unsigned long()> ConnectionsSize = [this]() -> unsigned long {
+                lock_guard<mutex> guard(*m_Connections);
+                return Connections.size();
+            };
+            function<unsigned long()> AccountSize = [this]() -> unsigned long {
+                lock_guard<mutex> guard(*m_Accounts);
+                return Accounts.size();
+            };
 
+            {
+                bool f_break = false;
+                for (unsigned long i = 0; i < ConnectionsSize() && !f_break; i++) {
+                    if ((connection = GetConnection(i))) {
+                        {
+                            lock_guard<mutex> guard(*m_Connections);
+                            if (connection->ID == get<0>(current))
+                                f_break = true;
+                            isGuest = connection->IsGuest;
+                        }
+                    }
+                }
+            }
+
+            if (!isGuest)
+                requester = connection->Owner;
+
+            shared_ptr<ServerRequest> request = get<1>(current);
+            //endregion
+
+            if (request == nullptr)
+                continue;
+
+            //region Enact/Respond:
+            stringstream ss_response{};
+            stringstream ss_log{};
+            stringstream ss_data(request->Data);
+            ClientActionType responseType;
+            function<bool(shared_ptr<Account>, Hash, string)> verifyIdentity = [=](
+                    const shared_ptr<Account> &accIn,
+                    Hash _id, const string &_key) -> bool {
+                {
+                    lock_guard<mutex> guard(*m_Accounts);
+                    return accIn->ID == _id && accIn->Key == _key;
+                }
+            };
+            //region Enact
+            switch (request->Type) {
+                case ServerActionType::NONE: {
+                    cerr << "Server has attempted to enact a NULL request";
+                    continue;
+                }
+                case ServerActionType::LoginAccount: {
+                    if (!isGuest) { //Check if already logged in
+                        ss_response << "'Nothing to do, you are already logged in. To switch accounts, "
+                                       "have to logout first.'";
+                        ss_log << "User (" << requester->DisplayName
+                               << "#" << requester->ID
+                               << ") has requested to re-login. Request denied; Aborted.";
+                        responseType = general::ClientActionType::InformFailure;
+                        goto Respond;
+                    }
+
+                    //format: '{id} [key]'
+                    //region Unpack data
+                    Hash id;
+                    string key;
+                    ss_data >> id;
+                    getline(ss_data, key);
+                    //endregion
+
+                    shared_ptr<Account> targetAccount = nullptr;
+                    bool f_break = false;
+
+                    for (unsigned long i = 0; i < AccountSize() && !f_break; i++)
+                        if (verifyIdentity((targetAccount = GetAccount(i)), id, key))
+                            f_break = true;
+                    if (!f_break) { //Account was not found
+                        ss_response << "'Login failed, provided credentials were found to be invalid'";
+                        ss_log << "Guest has requested to login into an account with id (#"
+                               << id << ") using key '"
+                               << key << "'. The provided credentials did not match internal record. Request Denied;"
+                                         "Aborted.";
+                        responseType = general::ClientActionType::InformFailure;
+                        goto Respond;
+                    }
+
+                    //region Move the connection to the target account:
+                    targetAccount->Connection = connection;
+                    connection->SetOwner(make_shared<Account>(*targetAccount));
+                    //endregion
+
+                    ss_response << ServerName << " "
+                                << "You were successfully logged in";
+                    ss_log << "User ("
+                           << targetAccount->DisplayName << "#"
+                           << targetAccount->ID << ") Has requested to login. Request Approved; User has logged in.";
+                    responseType = general::ClientActionType::InformSuccess;
+
+                    break;
+                }
+                case ServerActionType::LogoutAccount: {
+                    if(isGuest){ //Check if guest
+                        ss_response << "Nothing to do; a guest cannot logout.";
+                        ss_log << "Guest with connection ID '#" << connection->ID
+                               << "' has requested to logout. Request Denied; Aborted.";
+                        responseType = general::ClientActionType::InformFailure;
+                        goto Respond;
+                    }
+
+                    //format {id} [key]
+                    //region Unpack data
+                    Hash id;
+                    string key;
+                    ss_data >> id;
+                    getline(ss_data, key);
+                    //endregion
+
+                    if (!verifyIdentity(requester,id,key)){
+                        ss_response << "'Logout failed, provided credentials were found to be invalid'";
+                        ss_log << "Guest has requested to logout from an account with id (#"
+                               << id << ") using key '"
+                               << key << "'. The provided credentials did not match internal record. Request Denied;"
+                                         "Aborted.";
+                        responseType = general::ClientActionType::InformFailure;
+                        goto Respond;
+                    }
+
+                    //region Disconnect client from the account
+                    requester->Connection=nullptr;
+                    connection->SetOwner(nullptr);
+                    //endregion
+
+                    ss_response << "'You were successfully logged out of the server.'";
+                    ss_log << "User (" << requester->DisplayName
+                           << "#" << requester->ID
+                           << ") has requested to logout. Request Approved; Client was logged out.";
+                    responseType = general::ClientActionType::InformSuccess;
+                    break;
+                }
+                case ServerActionType::RegisterAccount: {
+                    if(!isGuest){
+                        ss_response << "'To register a new account, you must first logout of the current one'";
+                        ss_log << "Logged-in user (" << requester->DisplayName << "#" << requester->ID
+                               << ") has requested to register a new account. Request denied; Aborted";
+                        responseType = general::ClientActionType::InformFailure;
+                        goto Respond;
+                    }
+
+                    //format [name] | [key]
+                    //region Unpack data
+                    string::size_type separator =request->Data.find('|');
+                    string name= request->Data.substr(0,separator);
+                    string key = request->Data.substr(separator+1);
+                    //endregion
+
+
+                    break;
+                }
+                case ServerActionType::CreateRoom:
+                    break;
+                case ServerActionType::GetMessages:
+                    break;
+                case ServerActionType::GetRooms:
+                    break;
+                case ServerActionType::AddMember:
+                    break;
+                case ServerActionType::RemoveMember:
+                    break;
+            }
+            //endregion
+            Respond:
+            {
+
+            };
+            //endregion
+        }
     }
 
     void Server::Stop() {
@@ -204,7 +393,7 @@ namespace src::classes::server {
         }
     }
 
-    shared_ptr<Client> Server::GetConnection(int i) {
+    shared_ptr<Client> Server::GetConnection(unsigned long i) {
         {
             lock_guard<mutex> guard(*m_Connections);
             return Connections[i];
@@ -218,7 +407,7 @@ namespace src::classes::server {
         }
     }
 
-    shared_ptr<Account> Server::GetAccount(int i) {
+    shared_ptr<Account> Server::GetAccount(unsigned long i) {
         {
             lock_guard<mutex> guard(*m_Accounts);
             return Accounts[i];
@@ -232,7 +421,7 @@ namespace src::classes::server {
         }
     }
 
-    shared_ptr<ChatRoom> Server::GetRoom(int i) {
+    shared_ptr<ChatRoom> Server::GetRoom(unsigned long i) {
         {
             lock_guard<mutex> guard(*m_Rooms);
             return Rooms[i];
@@ -246,7 +435,7 @@ namespace src::classes::server {
         }
     }
 
-    string Server::GetLog(int i) {
+    string Server::GetLog(unsigned long i) {
         {
             lock_guard<mutex> guard(*m_Log);
             return ServerLog[i];
@@ -256,7 +445,7 @@ namespace src::classes::server {
     void Server::EmplaceMessage(Hash h, tuple<Hash, Hash, string> cont) {
         {
             lock_guard<mutex> guard(*m_Messages);
-            Messages.emplace(h,move(cont));
+            Messages.emplace(h, move(cont));
         }
     }
 
@@ -267,43 +456,43 @@ namespace src::classes::server {
         }
     }
 
-    vector<tuple<Hash,Hash,string>> Server::V1GetMessage(Hash room) {
+    vector<tuple<Hash, Hash, string>> Server::V1GetMessage(Hash room) {
         {
             lock_guard<mutex> guard(*m_Messages);
-            vector<tuple<Hash,Hash,string>> res;
-            for(auto& cur: Messages)
-                if(get<0>(cur.second)==room)
+            vector<tuple<Hash, Hash, string>> res;
+            for (auto &cur: Messages)
+                if (get<0>(cur.second) == room)
                     res.push_back(cur.second);
             return res;
         }
     }
 
-    vector<tuple<Hash,Hash,string>> Server::V2GetMessage(Hash sender) {
+    vector<tuple<Hash, Hash, string>> Server::V2GetMessage(Hash sender) {
         {
             lock_guard<mutex> guard(*m_Messages);
-            vector<tuple<Hash,Hash,string>> res;
-            for(auto& cur: Messages)
-                if(get<1>(cur.second)==sender)
+            vector<tuple<Hash, Hash, string>> res;
+            for (auto &cur: Messages)
+                if (get<1>(cur.second) == sender)
                     res.push_back(cur.second);
             return res;
         }
     }
 
-    vector<tuple<Hash,Hash,string>> Server::V3GetMessage(string content) {
+    vector<tuple<Hash, Hash, string>> Server::V3GetMessage(string content) {
         {
             lock_guard<mutex> guard(*m_Messages);
-            vector<tuple<Hash,Hash,string>> res;
-            for(auto& cur: Messages)
-                if(get<2>(cur.second)==content)
+            vector<tuple<Hash, Hash, string>> res;
+            for (auto &cur: Messages)
+                if (get<2>(cur.second) == content)
                     res.push_back(cur.second);
             return res;
         }
     }
 
-    void Server::PushRequest(Hash id, const shared_ptr<ServerRequest>& req) {
+    void Server::PushRequest(Hash id, const shared_ptr<ServerRequest> &req) {
         {
             lock_guard<mutex> guard(*m_Requests);
-            Requests.emplace(id,req);
+            Requests.emplace(id, req);
         }
     }
 
@@ -316,10 +505,10 @@ namespace src::classes::server {
         }
     }
 
-    void Server::PushResponse(Hash id, const shared_ptr<ClientResponse>& resp) {
+    void Server::PushResponse(Hash id, const shared_ptr<ClientResponse> &resp) {
         {
             lock_guard<mutex> guard(*m_Responses);
-            Responses.emplace(id,resp);
+            Responses.emplace(id, resp);
         }
     }
 
@@ -336,8 +525,7 @@ namespace src::classes::server {
 namespace src::classes::general {
     template<typename... Args>
     ServerRequest::ServerRequest(ServerActionType type, int fd, Args... args):
-            Type(type),TargetFD(fd)
-    {
+            Type(type), TargetFD(fd) {
         stringstream ss{};
         ((ss << args << " "), ...);
         Data = ss.str();
@@ -356,12 +544,12 @@ namespace src::classes::general {
     }
 
     template<typename... Args>
-    ServerRequest ServerRequest::Deserialize(const string& inp) {
+    ServerRequest ServerRequest::Deserialize(const string &inp) {
         stringstream input(inp);
         string token;
 
         input >> token;
-        if (token[0]!=DELIMITER_START)
+        if (token[0] != DELIMITER_START)
             return {};
 
         int typeInt;
@@ -372,7 +560,7 @@ namespace src::classes::general {
         input >> fd;
 
         input >> token;
-        if(token[0]!=DATA_START)
+        if (token[0] != DATA_START)
             return {};
 
         string data;
@@ -387,6 +575,6 @@ namespace src::classes::general {
         return result;
     }
 
-    ServerRequest::ServerRequest()=default;
+    ServerRequest::ServerRequest() = default;
 
 }

@@ -8,18 +8,18 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/tmp/tmp.Woe1cve2Jd/cmake-build-debug"/>
+				<Option working_dir="/tmp/tmp.SvQhYDs0IT/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="EpollChat">
-				<Option output="/tmp/tmp.Woe1cve2Jd/cmake-build-debug/EpollChat" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/tmp/tmp.Woe1cve2Jd/cmake-build-debug"/>
+				<Option output="/tmp/tmp.SvQhYDs0IT/cmake-build-debug/EpollChat" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/tmp/tmp.SvQhYDs0IT/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -33,15 +33,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 EpollChat"/>
-					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 EpollChat"/>
+					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="EpollChat/fast">
-				<Option output="/tmp/tmp.Woe1cve2Jd/cmake-build-debug/EpollChat" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/tmp/tmp.Woe1cve2Jd/cmake-build-debug"/>
+				<Option output="/tmp/tmp.SvQhYDs0IT/cmake-build-debug/EpollChat" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/tmp/tmp.SvQhYDs0IT/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -55,115 +55,109 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 EpollChat/fast"/>
-					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 EpollChat/fast"/>
+					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/tmp/tmp.Woe1cve2Jd/cmake-build-debug"/>
+				<Option working_dir="/tmp/tmp.SvQhYDs0IT/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/tmp/tmp.Woe1cve2Jd/cmake-build-debug"/>
+				<Option working_dir="/tmp/tmp.SvQhYDs0IT/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.Woe1cve2Jd/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j3 -f &quot;/tmp/tmp.SvQhYDs0IT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/main.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/main.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/AccountInfo.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/AccountInfo.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/AccountInfo.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/AccountInfo.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/ChatRoomInfo.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/ChatRoomInfo.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/ChatRoomInfo.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/ChatRoomInfo.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/ClientInfo.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/ClientInfo.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/client/ClientInfo.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/ClientInfo.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/ClientResponse.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/general/ClientResponse.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/ClientResponse.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/general/ClientResponse.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/Constants.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/general/Constants.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/Enums.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/general/Enums.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/ServerRequest.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Account.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/general/ServerRequest.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Account.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Account.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/ChatRoom.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Account.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/ChatRoom.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/ChatRoom.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Client.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/ChatRoom.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Client.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Client.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Server.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Client.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/server/Server.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Server.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/IO/ServerConnection.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/classes/server/Server.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/IO/ServerConnection.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/IO/ServerConnection.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/terminal/InstructionInterperter.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/IO/ServerConnection.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/terminal/InstructionInterperter.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/terminal/InstructionInterperter.cpp">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/terminal/TerminalUserInterface.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/terminal/InstructionInterperter.h">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/front/terminal/TerminalUserInterface.h">
 			<Option target="EpollChat"/>
 		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/terminal/TerminalUserInterface.cpp">
-			<Option target="EpollChat"/>
-		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/src/front/terminal/TerminalUserInterface.h">
-			<Option target="EpollChat"/>
-		</Unit>
-		<Unit filename="/tmp/tmp.Woe1cve2Jd/CMakeLists.txt">
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

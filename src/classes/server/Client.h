@@ -8,12 +8,19 @@
 #include <string>
 #include <vector>
 #include <sys/socket.h>
+#include <memory>
+
+#include "../general/Constants.h"
 
 using namespace std;
+using namespace src::classes::general;
 
 namespace src::classes::server {
+    class Account;
     class Client {
     public:
+        Hash ID;
+        shared_ptr<Account> Owner;
         bool IsGuest;
         int FileDescriptor;
         sockaddr_storage Address;
@@ -30,7 +37,11 @@ namespace src::classes::server {
         ssize_t Write();
 
         void EnqueueResponse(const string &s_resp);
+        void SetOwner(shared_ptr<Account> owner);
 
+    private:
+        static Hash count;
+        void Setup();
     };
 }// server
 

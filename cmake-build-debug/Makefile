@@ -57,10 +57,10 @@ RM = /usr/local/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /tmp/tmp.Woe1cve2Jd
+CMAKE_SOURCE_DIR = /tmp/tmp.SvQhYDs0IT
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /tmp/tmp.Woe1cve2Jd/cmake-build-debug
+CMAKE_BINARY_DIR = /tmp/tmp.SvQhYDs0IT/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.Woe1cve2Jd/cmake-build-debug/CMakeFiles /tmp/tmp.Woe1cve2Jd/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles /tmp/tmp.SvQhYDs0IT/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.Woe1cve2Jd/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -248,30 +248,6 @@ src/classes/general/ClientResponse.s: src/classes/general/ClientResponse.cpp.s
 src/classes/general/ClientResponse.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.s
 .PHONY : src/classes/general/ClientResponse.cpp.s
-
-src/classes/general/ServerRequest.o: src/classes/general/ServerRequest.cpp.o
-.PHONY : src/classes/general/ServerRequest.o
-
-# target to build an object file
-src/classes/general/ServerRequest.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/classes/general/ServerRequest.cpp.o
-.PHONY : src/classes/general/ServerRequest.cpp.o
-
-src/classes/general/ServerRequest.i: src/classes/general/ServerRequest.cpp.i
-.PHONY : src/classes/general/ServerRequest.i
-
-# target to preprocess a source file
-src/classes/general/ServerRequest.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/classes/general/ServerRequest.cpp.i
-.PHONY : src/classes/general/ServerRequest.cpp.i
-
-src/classes/general/ServerRequest.s: src/classes/general/ServerRequest.cpp.s
-.PHONY : src/classes/general/ServerRequest.s
-
-# target to generate assembly for a file
-src/classes/general/ServerRequest.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/classes/general/ServerRequest.cpp.s
-.PHONY : src/classes/general/ServerRequest.cpp.s
 
 src/classes/server/Account.o: src/classes/server/Account.cpp.o
 .PHONY : src/classes/server/Account.o
@@ -465,9 +441,6 @@ help:
 	@echo "... src/classes/general/ClientResponse.o"
 	@echo "... src/classes/general/ClientResponse.i"
 	@echo "... src/classes/general/ClientResponse.s"
-	@echo "... src/classes/general/ServerRequest.o"
-	@echo "... src/classes/general/ServerRequest.i"
-	@echo "... src/classes/general/ServerRequest.s"
 	@echo "... src/classes/server/Account.o"
 	@echo "... src/classes/server/Account.i"
 	@echo "... src/classes/server/Account.s"

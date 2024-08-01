@@ -9,8 +9,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o.d"
   "CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o"
   "CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o.d"
-  "CMakeFiles/EpollChat.dir/src/classes/general/ServerRequest.cpp.o"
-  "CMakeFiles/EpollChat.dir/src/classes/general/ServerRequest.cpp.o.d"
   "CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o"
   "CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o.d"
   "CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o"

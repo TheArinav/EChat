@@ -87,16 +87,16 @@ namespace src::classes::server {
         shared_ptr<mutex> m_Requests;
 
         void PushConnection(shared_ptr<Client> client);
-        shared_ptr<Client> GetConnection(int i);
+        shared_ptr<Client> GetConnection(unsigned long i);
 
         void PushAccount(shared_ptr<Account> account);
-        shared_ptr<Account> GetAccount(int i);
+        shared_ptr<Account> GetAccount(unsigned long i);
 
         void PushRoom(shared_ptr<ChatRoom> room);
-        shared_ptr<ChatRoom> GetRoom(int i);
+        shared_ptr<ChatRoom> GetRoom(unsigned long i);
 
         void PushLog(string msg);
-        string GetLog(int i);
+        string GetLog(unsigned long i);
 
         void EmplaceMessage(Hash h, tuple<Hash,Hash,string> cont);
         tuple<Hash,Hash,string> KGetMessage(Hash id);
