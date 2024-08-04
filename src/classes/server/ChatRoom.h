@@ -18,16 +18,19 @@ namespace src::classes::server {
     public :
         Hash ID;
         string DisplayName;
-        vector<string*> Messages;
-        vector<shared_ptr<Account>*> Members;
-        shared_ptr<Account> *Host;
+        vector<tuple<Hash,string>> Messages;
+        vector<shared_ptr<Account>> Members;
+        shared_ptr<Account> Host;
 
         ChatRoom();
-        explicit ChatRoom(string dispName, shared_ptr<Account> *p_hostPtr);
-        void PushMessage(string *p_msg);
-        void PushMember(shared_ptr<Account> *p_member);
-        string* GetMessage(int i);
-        shared_ptr<Account>* GetMember(int i);
+        explicit ChatRoom(string dispName, const shared_ptr<Account>& p_hostPtr);
+        void PushMessage(Hash sID, const string& p_msg);
+        void PushMember(const shared_ptr<Account>& p_member);
+        tuple<Hash,string> GetMessage(int i);
+        shared_ptr<Account> GetMember(int i);
+        void EraseMember(Hash id);
+        bool FindMember(Hash id);
+        bool FindMessage(unsigned long i);
     private:
         static Hash count;
         unique_ptr<mutex> m_Messages;

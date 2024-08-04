@@ -16,10 +16,9 @@ namespace src::classes::general{
         LogoutAccount,
         RegisterAccount,
         CreateRoom,
-        GetMessages,
-        GetRooms,
         AddMember,
-        RemoveMember
+        RemoveMember,
+        SendMessage
     };
 }
 #endif //ECHAT_ENUMS_H

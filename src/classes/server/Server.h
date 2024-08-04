@@ -77,6 +77,7 @@ namespace src::classes::server {
         void Start();
         void Stop();
     private:
+        atomic<Hash> msgCount;
         shared_ptr<atomic<bool>> Status;
         shared_ptr<mutex> m_Connections;
         shared_ptr<mutex> m_Accounts;
@@ -87,13 +88,15 @@ namespace src::classes::server {
         shared_ptr<mutex> m_Requests;
 
         void PushConnection(shared_ptr<Client> client);
-        shared_ptr<Client> GetConnection(unsigned long i);
+        shared_ptr<Client> GetConnection(long long i);
 
-        void PushAccount(shared_ptr<Account> account);
-        shared_ptr<Account> GetAccount(unsigned long i);
+        void PushAccount(const shared_ptr<Account>& account);
+        shared_ptr<Account> GetAccount(long long i);
+        long long FindAccount(Hash id);
 
-        void PushRoom(shared_ptr<ChatRoom> room);
-        shared_ptr<ChatRoom> GetRoom(unsigned long i);
+        void PushRoom(const shared_ptr<ChatRoom>& room);
+        shared_ptr<ChatRoom> GetRoom(long long i);
+        long long FindRoom(Hash id);
 
         void PushLog(string msg);
         string GetLog(unsigned long i);
