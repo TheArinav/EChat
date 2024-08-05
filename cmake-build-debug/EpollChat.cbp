@@ -85,6 +85,12 @@
 		<Unit filename="/tmp/tmp.SvQhYDs0IT/main.cpp">
 			<Option target="EpollChat"/>
 		</Unit>
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.cpp">
+			<Option target="EpollChat"/>
+		</Unit>
+		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.h">
+			<Option target="EpollChat"/>
+		</Unit>
 		<Unit filename="/tmp/tmp.SvQhYDs0IT/src/classes/client/AccountInfo.cpp">
 			<Option target="EpollChat"/>
 		</Unit>

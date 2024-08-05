@@ -18,11 +18,46 @@ namespace src::classes::general {
         int TargetFD;
         string Data;
         ClientResponse();
-        template <typename... Args>
-        ClientResponse(ClientActionType type, int fd, Args... args);
+        template<typename... Args>
+        ClientResponse(ClientActionType type, int fd, Args... args) :
+                Type(type), TargetFD(fd)
+        {
+            stringstream ss{};
+            ((ss << args << " "), ...);
+            Data = ss.str();
+        }
         [[nodiscard]] string Serialize() const;
         template<typename... Args>
-        static ClientResponse Deserialize(const string&);
+        static ClientResponse Deserialize(const string& inp) {
+            stringstream input(inp);
+            string token;
+
+            input >> token;
+            if (token[0] != DELIMITER_START)
+                return {};
+
+            int typeInt;
+            input >> typeInt;
+            auto type = static_cast<ClientActionType>(typeInt);
+
+            int fd;
+            input >> fd;
+
+            input >> token;
+            if (token[0] != DATA_START)
+                return {};
+
+            string data;
+            getline(input, data);
+
+            if (data.find(DATA_END) != string::npos)
+                data.erase(data.find(DATA_END));
+
+            ClientResponse result(type, fd);
+            result.Data = data;
+
+            return result;
+        }
     };
 } // src
 

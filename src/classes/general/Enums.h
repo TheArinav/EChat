@@ -18,7 +18,8 @@ namespace src::classes::general{
         CreateRoom,
         AddMember,
         RemoveMember,
-        SendMessage
+        SendMessage,
+        TerminateConnection
     };
 }
 #endif //ECHAT_ENUMS_H

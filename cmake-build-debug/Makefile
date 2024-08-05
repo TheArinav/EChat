@@ -31,6 +31,9 @@ default_target: all
 
 .SUFFIXES: .hpux_make_needs_suffix_list
 
+# Produce verbose output by default.
+VERBOSE = 1
+
 # Command-line flag to silence nested $(MAKE).
 $(VERBOSE)MAKESILENT = -s
 
@@ -152,6 +155,30 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+src/Testing/ServerConnectionTest.o: src/Testing/ServerConnectionTest.cpp.o
+.PHONY : src/Testing/ServerConnectionTest.o
+
+# target to build an object file
+src/Testing/ServerConnectionTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o
+.PHONY : src/Testing/ServerConnectionTest.cpp.o
+
+src/Testing/ServerConnectionTest.i: src/Testing/ServerConnectionTest.cpp.i
+.PHONY : src/Testing/ServerConnectionTest.i
+
+# target to preprocess a source file
+src/Testing/ServerConnectionTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.i
+.PHONY : src/Testing/ServerConnectionTest.cpp.i
+
+src/Testing/ServerConnectionTest.s: src/Testing/ServerConnectionTest.cpp.s
+.PHONY : src/Testing/ServerConnectionTest.s
+
+# target to generate assembly for a file
+src/Testing/ServerConnectionTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/EpollChat.dir/build.make CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.s
+.PHONY : src/Testing/ServerConnectionTest.cpp.s
 
 src/classes/client/AccountInfo.o: src/classes/client/AccountInfo.cpp.o
 .PHONY : src/classes/client/AccountInfo.o
@@ -429,6 +456,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/Testing/ServerConnectionTest.o"
+	@echo "... src/Testing/ServerConnectionTest.i"
+	@echo "... src/Testing/ServerConnectionTest.s"
 	@echo "... src/classes/client/AccountInfo.o"
 	@echo "... src/classes/client/AccountInfo.i"
 	@echo "... src/classes/client/AccountInfo.s"

@@ -34,7 +34,7 @@ using namespace src::classes::server;
 typedef struct addrinfo AddressInfo;
 typedef struct epoll_event EpollEvent;
 
-const int MAX_EVENTS= numeric_limits<int>::max();
+const int MAX_EVENTS= 16;
 
 namespace src::classes::general {
     struct ServerRequest {
@@ -46,17 +46,52 @@ namespace src::classes::general {
         ServerRequest();
 
         template<typename... Args>
-        ServerRequest(ServerActionType type, int fd, Args... args);
+        ServerRequest(ServerActionType type, int fd, Args... args):
+                Type(type), TargetFD(fd) {
+            stringstream ss{};
+            ((ss << args << " "), ...);
+            Data = ss.str();
+        }
 
         [[nodiscard]] string Serialize() const;
 
         template<typename... Args>
-        static ServerRequest Deserialize(const string &);
+        static ServerRequest Deserialize(const string &inp) {
+            stringstream input(inp);
+            string token;
+
+            input >> token;
+            if (token[0] != DELIMITER_START)
+                return {};
+
+            int typeInt;
+            input >> typeInt;
+            auto type = static_cast<ServerActionType>(typeInt);
+
+            int fd;
+            input >> fd;
+
+            input >> token;
+            if (token[0] != DATA_START)
+                return {};
+
+            string data;
+            getline(input, data);
+
+            if (data.find(DATA_END) != string::npos)
+                data.erase(data.find(DATA_END));
+
+            ServerRequest result(type, fd);
+            result.Data = data;
+
+            return result;
+        }
     };
 }
 
 namespace src::classes::server {
     class Server {
+    public:
         vector<shared_ptr<Client>> Connections;
         vector<shared_ptr<Account>> Accounts;
         vector<shared_ptr<ChatRoom>> Rooms;
@@ -90,7 +125,7 @@ namespace src::classes::server {
         void PushConnection(shared_ptr<Client> client);
         shared_ptr<Client> GetConnection(long long i);
 
-        void PushAccount(const shared_ptr<Account>& account);
+        void PushAccount(shared_ptr<Account> account);
         shared_ptr<Account> GetAccount(long long i);
         long long FindAccount(Hash id);
 
@@ -116,6 +151,10 @@ namespace src::classes::server {
         void Setup();
         void EnactRespond();
         void LogMessage(const string& msg);
+
+        shared_ptr<Client> GetClientByFd(int fd);
+
+        void RemoveConnection(int fd);
     };
 } // server
 

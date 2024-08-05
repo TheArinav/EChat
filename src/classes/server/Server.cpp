@@ -3,6 +3,8 @@
 #include <utility>
 #include <functional>
 
+using namespace std;
+
 namespace src::classes::server {
     Server::Server() {
         Setup();
@@ -26,6 +28,8 @@ namespace src::classes::server {
             vector<EpollEvent> events(MAX_EVENTS);
             while (Status->load()) {
                 int n = epoll_wait(EpollFD, events.data(), MAX_EVENTS, -1);
+                if (errno == EINTR)
+                    continue;
                 if (n == -1) {
                     perror("epoll_wait");
                     exit(EXIT_FAILURE);
@@ -58,6 +62,7 @@ namespace src::classes::server {
 
                         // Add new client to epoll
                         EpollEvent event;
+                        memset(&event, 0, sizeof(event));
                         event.data.fd = new_fd;
                         event.events = EPOLLIN | EPOLLET;
                         if (epoll_ctl(EpollFD, EPOLL_CTL_ADD, new_fd, &event) == -1) {
@@ -67,25 +72,30 @@ namespace src::classes::server {
                         }
 
                         auto client = make_shared<Client>(new_fd, addr, true);
-                        Connections.push_back(move(client));
+                        PushConnection(move(client));
                     } else {
                         // Handle client data
-                        for (auto &client: Connections) {
-                            if (client->FileDescriptor == events[i].data.fd) {
-                                ssize_t bytes_read = client->Read();
-                                if (bytes_read <= 0) {
-                                    if (bytes_read == 0) {
-                                        // Connection closed
-                                        close(client->FileDescriptor);
-                                    } else {
-                                        string buff = string(client->ReadBuffer.begin(), client->ReadBuffer.end());
-                                        auto curReq = make_shared<ServerRequest>(ServerRequest::Deserialize(buff));
-                                        auto requesterID = client->ID;
-                                        PushRequest(requesterID, curReq);
-                                    }
-                                    continue;
-                                }
+                        auto client = GetClientByFd(events[i].data.fd);
+                        if (!client) continue;
+
+                        ssize_t bytes_read = client->Read();
+                        if (bytes_read <= 0) {
+                            if (bytes_read == 0) {
+                                // Handle it gracefully if the client explicitly requests to terminate the connection
+                                cerr << "Received zero bytes, waiting for explicit termination request." << endl;
+                            } else if (errno != EAGAIN && errno != EWOULDBLOCK) {
+                                // Handle error in recv() if it's not just a non-blocking issue
+                                perror("Error in recv()");
+                                close(client->FileDescriptor);
+                                RemoveConnection(client->FileDescriptor);
                             }
+                            continue;
+                        } else {
+                            // Handle normal data processing
+                            string buff = string(client->ReadBuffer.begin(), client->ReadBuffer.end());
+                            auto curReq = make_shared<ServerRequest>(ServerRequest::Deserialize(buff));
+                            auto requesterID = client->ID;
+                            PushRequest(requesterID, curReq);
                         }
                     }
                 }
@@ -100,7 +110,14 @@ namespace src::classes::server {
         Status->store(false);
         FileDescriptor = -1;
         ServerThread = nullptr;
-        msgCount=0;
+        msgCount = 0;
+        m_Connections = make_shared<mutex>();
+        m_Accounts = make_shared<mutex>();
+        m_Rooms = make_shared<mutex>();
+        m_Log = make_shared<mutex>();
+        m_Messages = make_shared<mutex>();
+        m_Responses = make_shared<mutex>();
+        m_Requests = make_shared<mutex>();
 
         EpollFD = epoll_create1(0);
         if (EpollFD == -1) {
@@ -334,6 +351,20 @@ namespace src::classes::server {
                     responseType = general::ClientActionType::InformSuccess;
                     break;
                 }
+                case ServerActionType::TerminateConnection: {
+                    ss_response << "'Connection terminated by client request.'";
+                    ss_log << "Client (" << connection->ID
+                           << ") requested to terminate the connection. Connection closed.";
+                    responseType = general::ClientActionType::InformSuccess;
+
+                    // Send response and close the connection
+                    PushResponse(connection->ID, make_shared<ClientResponse>(responseType, connection->FileDescriptor,
+                                                                             ss_response.str()));
+                    close(connection->FileDescriptor);
+                    RemoveConnection(connection->FileDescriptor);
+                    break;
+                }
+
                 case ServerActionType::RegisterAccount: {
                     if (!isGuest) {
                         ss_response << "'To register a new account, you must first logout of the current one'";
@@ -351,16 +382,21 @@ namespace src::classes::server {
                     string name, key;
                     {   //Make sure temporary vars go out of scope asap.
                         string::size_type separator = request->Data.find('|');
-                        name = request->Data.substr(0, separator);
+                        name = request->Data.substr(1, separator - 2);
                         key = request->Data.substr(separator + 1);
+                        key = key.substr(1, key.size() - 3);
                     }
                     //endregion
 
                     auto newCl = make_shared<Account>(name, key);
 
-                    PushAccount(newCl);
+                    PushAccount(move(newCl));
                     shared_ptr<Account> target = GetAccount(-1);
-                    auto ID = target->ID;
+                    Hash ID;
+                    {
+                        lock_guard<mutex> guard(*m_Accounts);
+                        ID = target->ID;
+                    }
                     ss_response << ID
                                 << " 'Account was successfully registered'";
                     ss_log << "Guest had requested to register a new account. Request Approved, "
@@ -545,7 +581,8 @@ namespace src::classes::server {
                         ss_response << "'You must be logged-in to a Host user of a chatroom or the user themselves"
                                        " in order to remove a chatroom member. You are currently NOT logged-in to ANY"
                                        " account. Aborted";
-                        ss_log << "Guest user has requested to remove a member from a chatroom. Request Denied; Aborted";
+                        ss_log
+                                << "Guest user has requested to remove a member from a chatroom. Request Denied; Aborted";
                         responseType = general::ClientActionType::InformFailure;
                         goto Respond;
                     }
@@ -595,7 +632,7 @@ namespace src::classes::server {
 
                     auto targetRoom = GetRoom(roomIndex);
 
-                    if(!targetRoom->FindMember(memID)){
+                    if (!targetRoom->FindMember(memID)) {
                         ss_response << "'Failed to find member with provided ID in the chatroom. Aborted'";
                         ss_log << "User ("
                                << requester->DisplayName
@@ -659,8 +696,9 @@ namespace src::classes::server {
                 }
                 case ServerActionType::SendMessage:
                     if (isGuest) {
-                        ss_response << "'You must be logged-in to a member user of a chatroom in order to send a message."
-                                       " You are currently NOT logged-in to ANY account. Aborted";
+                        ss_response
+                                << "'You must be logged-in to a member user of a chatroom in order to send a message."
+                                   " You are currently NOT logged-in to ANY account. Aborted";
                         ss_log << "Guest user has requested to send a message in a chatroom. Request Denied; Aborted";
                         responseType = general::ClientActionType::InformFailure;
                         goto Respond;
@@ -669,7 +707,7 @@ namespace src::classes::server {
                     //format {cID} {rID} [cKey] | [msg]
                     //region Unpack data
                     Hash cID, rID;
-                    string cKey,msg;
+                    string cKey, msg;
                     ss_data >> cID >> rID;
                     {
                         string reminder;
@@ -715,7 +753,7 @@ namespace src::classes::server {
 
                     auto targetRoom = GetRoom(roomIndex);
 
-                    if(!targetRoom->FindMember(cID)){
+                    if (!targetRoom->FindMember(cID)) {
                         ss_response << "'You must be a member of a chatroom to send a message in it. Aborted'";
                         ss_log << "User ("
                                << requester->DisplayName
@@ -726,9 +764,9 @@ namespace src::classes::server {
                         responseType = general::ClientActionType::InformFailure;
                         goto Respond;
                     }
-                    msgCount.store(msgCount.load()+1);
-                    EmplaceMessage(msgCount.load(),tuple<Hash,Hash,string>(rID,Hash(cID),string(msg)));
-                    targetRoom->PushMessage(cID,string(msg));
+                    msgCount.store(msgCount.load() + 1);
+                    EmplaceMessage(msgCount.load(), tuple<Hash, Hash, string>(rID, Hash(cID), string(msg)));
+                    targetRoom->PushMessage(cID, string(msg));
 
                     ss_response << msgCount.load()
                                 << "'Message sent'";
@@ -754,6 +792,7 @@ namespace src::classes::server {
                 LogMessage(ss_log.str());
                 auto s_resp = ClientResponse(responseType, connection->FileDescriptor, ss_response.str()).Serialize();
                 connection->EnqueueResponse(s_resp);
+                connection->Write();
             }
             //endregion
         }
@@ -793,15 +832,15 @@ namespace src::classes::server {
         {
             lock_guard<mutex> guard(*m_Connections);
             if (i < 0)
-                i = (long) Connections.size() - i;
+                i = (long) Connections.size() + i;
             return Connections[i];
         }
     }
 
-    void Server::PushAccount(const shared_ptr<Account> &account) {
+    void Server::PushAccount(shared_ptr<Account> account) {
         {
             lock_guard<mutex> guard(*m_Accounts);
-            Accounts.push_back(account);
+            Accounts.push_back(move(account));
         }
     }
 
@@ -809,9 +848,9 @@ namespace src::classes::server {
         {
             lock_guard<mutex> guard(*m_Accounts);
             if (i < 0)
-                i = (long) Accounts.size() - i;
-            return Accounts[i];
+                i = (long) Accounts.size() + i;
         }
+        return Accounts[i];
     }
 
     void Server::PushRoom(const shared_ptr<ChatRoom> &room) {
@@ -825,7 +864,7 @@ namespace src::classes::server {
         {
             lock_guard<mutex> guard(*m_Rooms);
             if (i < 0)
-                i = (long) Rooms.size() - i;
+                i = (long) Rooms.size() + i;
             return Rooms[i];
         }
     }
@@ -841,7 +880,7 @@ namespace src::classes::server {
         {
             lock_guard<mutex> guard(*m_Log);
             if (i < 0)
-                i = ServerLog.size() - i;
+                i = ServerLog.size() + i;
             return ServerLog[i];
         }
     }
@@ -950,16 +989,32 @@ namespace src::classes::server {
                 return (long long) i;
         return -1;
     }
+
+    shared_ptr<Client> Server::GetClientByFd(int fd) {
+        lock_guard<mutex> guard(*m_Connections);
+        for (auto &client: Connections) {
+            if (client->FileDescriptor == fd) {
+                return client;
+            }
+        }
+        return nullptr;
+    }
+
+    void Server::RemoveConnection(int fd) {
+        lock_guard<mutex> guard(*m_Connections);
+        auto it = remove_if(Connections.begin(), Connections.end(),
+                            [fd](const shared_ptr<Client> &client) {
+                                return client->FileDescriptor == fd;
+                            });
+        if (it != Connections.end()) {
+            Connections.erase(it, Connections.end());
+        }
+    }
+
+
 } // server
 
 namespace src::classes::general {
-    template<typename... Args>
-    ServerRequest::ServerRequest(ServerActionType type, int fd, Args... args):
-            Type(type), TargetFD(fd) {
-        stringstream ss{};
-        ((ss << args << " "), ...);
-        Data = ss.str();
-    }
 
     string ServerRequest::Serialize() const {
         stringstream result{};
@@ -971,38 +1026,6 @@ namespace src::classes::general {
                << DATA_END << " "
                << DELIMITER_END;
         return result.str();
-    }
-
-    template<typename... Args>
-    ServerRequest ServerRequest::Deserialize(const string &inp) {
-        stringstream input(inp);
-        string token;
-
-        input >> token;
-        if (token[0] != DELIMITER_START)
-            return {};
-
-        int typeInt;
-        input >> typeInt;
-        auto type = static_cast<ServerActionType>(typeInt);
-
-        int fd;
-        input >> fd;
-
-        input >> token;
-        if (token[0] != DATA_START)
-            return {};
-
-        string data;
-        getline(input, data, ' ');
-
-        if (data.find(DATA_END) != string::npos)
-            data.erase(data.find(DATA_END));
-
-        ServerRequest result(type, fd);
-        result.Data = data;
-
-        return result;
     }
 
     ServerRequest::ServerRequest() = default;

@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/EpollChat.dir/main.cpp.o"
   "CMakeFiles/EpollChat.dir/main.cpp.o.d"
+  "CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o"
+  "CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o.d"
   "CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o"
   "CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o.d"
   "CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o"

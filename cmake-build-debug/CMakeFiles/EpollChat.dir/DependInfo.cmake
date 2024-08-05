@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/tmp/tmp.SvQhYDs0IT/main.cpp" "CMakeFiles/EpollChat.dir/main.cpp.o" "gcc" "CMakeFiles/EpollChat.dir/main.cpp.o.d"
+  "/tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.cpp" "CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o" "gcc" "CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o.d"
   "/tmp/tmp.SvQhYDs0IT/src/classes/client/AccountInfo.cpp" "CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o" "gcc" "CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o.d"
   "/tmp/tmp.SvQhYDs0IT/src/classes/client/ChatRoomInfo.cpp" "CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o" "gcc" "CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o.d"
   "/tmp/tmp.SvQhYDs0IT/src/classes/client/ClientInfo.cpp" "CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o" "gcc" "CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o.d"

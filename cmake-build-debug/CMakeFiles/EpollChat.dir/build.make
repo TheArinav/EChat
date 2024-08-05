@@ -27,6 +27,9 @@
 
 .SUFFIXES: .hpux_make_needs_suffix_list
 
+# Produce verbose output by default.
+VERBOSE = 1
+
 # Command-line flag to silence nested $(MAKE).
 $(VERBOSE)MAKESILENT = -s
 
@@ -83,10 +86,24 @@ CMakeFiles/EpollChat.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/EpollChat.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /tmp/tmp.SvQhYDs0IT/main.cpp -o CMakeFiles/EpollChat.dir/main.cpp.s
 
+CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o: CMakeFiles/EpollChat.dir/flags.make
+CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o: ../src/Testing/ServerConnectionTest.cpp
+CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o -MF CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o.d -o CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.cpp
+
+CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.cpp > CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.i
+
+CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /tmp/tmp.SvQhYDs0IT/src/Testing/ServerConnectionTest.cpp -o CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.s
+
 CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o: ../src/classes/client/AccountInfo.cpp
 CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/client/AccountInfo.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.i: cmake_force
@@ -100,7 +117,7 @@ CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o: ../src/classes/client/ChatRoomInfo.cpp
 CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/client/ChatRoomInfo.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.i: cmake_force
@@ -114,7 +131,7 @@ CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o: ../src/classes/client/ClientInfo.cpp
 CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/client/ClientInfo.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.i: cmake_force
@@ -128,7 +145,7 @@ CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o: ../src/classes/general/ClientResponse.cpp
 CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/general/ClientResponse.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.i: cmake_force
@@ -142,7 +159,7 @@ CMakeFiles/EpollChat.dir/src/classes/general/ClientResponse.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o: ../src/classes/server/Account.cpp
 CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/server/Account.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.i: cmake_force
@@ -156,7 +173,7 @@ CMakeFiles/EpollChat.dir/src/classes/server/Account.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o: ../src/classes/server/ChatRoom.cpp
 CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/server/ChatRoom.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.i: cmake_force
@@ -170,7 +187,7 @@ CMakeFiles/EpollChat.dir/src/classes/server/ChatRoom.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o: ../src/classes/server/Client.cpp
 CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/server/Client.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.i: cmake_force
@@ -184,7 +201,7 @@ CMakeFiles/EpollChat.dir/src/classes/server/Client.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o: ../src/classes/server/Server.cpp
 CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o -MF CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o.d -o CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/classes/server/Server.cpp
 
 CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.i: cmake_force
@@ -198,7 +215,7 @@ CMakeFiles/EpollChat.dir/src/classes/server/Server.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o: ../src/front/IO/ServerConnection.cpp
 CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o -MF CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o.d -o CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/front/IO/ServerConnection.cpp
 
 CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.i: cmake_force
@@ -212,7 +229,7 @@ CMakeFiles/EpollChat.dir/src/front/IO/ServerConnection.cpp.s: cmake_force
 CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o: ../src/front/terminal/InstructionInterperter.cpp
 CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o -MF CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o.d -o CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/front/terminal/InstructionInterperter.cpp
 
 CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.i: cmake_force
@@ -226,7 +243,7 @@ CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cpp.s: cmake_
 CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o: CMakeFiles/EpollChat.dir/flags.make
 CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o: ../src/front/terminal/TerminalUserInterface.cpp
 CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o: CMakeFiles/EpollChat.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o -MF CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o.d -o CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o -c /tmp/tmp.SvQhYDs0IT/src/front/terminal/TerminalUserInterface.cpp
 
 CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.i: cmake_force
@@ -240,6 +257,7 @@ CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.s: cmake_f
 # Object files for target EpollChat
 EpollChat_OBJECTS = \
 "CMakeFiles/EpollChat.dir/main.cpp.o" \
+"CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o" \
 "CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o" \
 "CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o" \
 "CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o" \
@@ -256,6 +274,7 @@ EpollChat_OBJECTS = \
 EpollChat_EXTERNAL_OBJECTS =
 
 EpollChat: CMakeFiles/EpollChat.dir/main.cpp.o
+EpollChat: CMakeFiles/EpollChat.dir/src/Testing/ServerConnectionTest.cpp.o
 EpollChat: CMakeFiles/EpollChat.dir/src/classes/client/AccountInfo.cpp.o
 EpollChat: CMakeFiles/EpollChat.dir/src/classes/client/ChatRoomInfo.cpp.o
 EpollChat: CMakeFiles/EpollChat.dir/src/classes/client/ClientInfo.cpp.o
@@ -269,7 +288,7 @@ EpollChat: CMakeFiles/EpollChat.dir/src/front/terminal/InstructionInterperter.cp
 EpollChat: CMakeFiles/EpollChat.dir/src/front/terminal/TerminalUserInterface.cpp.o
 EpollChat: CMakeFiles/EpollChat.dir/build.make
 EpollChat: CMakeFiles/EpollChat.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable EpollChat"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/tmp/tmp.SvQhYDs0IT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable EpollChat"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/EpollChat.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

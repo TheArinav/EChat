@@ -9,6 +9,7 @@
 #include <vector>
 #include <sys/socket.h>
 #include <memory>
+#include <mutex>
 
 #include "../general/Constants.h"
 
@@ -41,6 +42,9 @@ namespace src::classes::server {
 
     private:
         static Hash count;
+        unique_ptr<mutex> WriteMutex;
+        unique_ptr<mutex> ReadMutex;
+        unique_ptr<mutex> OwnerMutex;
         void Setup();
     };
 }// server
