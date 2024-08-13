@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <sstream>
+#include <iostream>
 
 #include "./Constants.h"
 #include "./Enums.h"
@@ -33,25 +34,37 @@ namespace src::classes::general {
             string token;
 
             input >> token;
-            if (token[0] != DELIMITER_START)
+            if (token.empty() || token[0] != DELIMITER_START) {
+                cerr << "Error: Invalid start delimiter." << endl;
                 return {};
+            }
 
             int typeInt;
             input >> typeInt;
+            if (typeInt < 0 || typeInt >= static_cast<int>(ClientActionType::LeaveRoom)) {
+                cerr << "Error: Invalid ClientActionType value." << endl;
+                return {};
+            }
             auto type = static_cast<ClientActionType>(typeInt);
 
             int fd;
             input >> fd;
 
             input >> token;
-            if (token[0] != DATA_START)
+            if (token.empty() || token[0] != DATA_START) {
+                cerr << "Error: Invalid data start delimiter." << endl;
                 return {};
+            }
 
             string data;
             getline(input, data);
 
-            if (data.find(DATA_END) != string::npos)
-                data.erase(data.find(DATA_END));
+            auto endPos = data.find(DATA_END);
+            if (endPos == string::npos) {
+                cerr << "Error: Missing data end delimiter." << endl;
+                return {};
+            }
+            data.erase(endPos);  // Remove the data end delimiter
 
             ClientResponse result(type, fd);
             result.Data = data;

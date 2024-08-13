@@ -49,7 +49,7 @@ namespace src::classes::general {
         ServerRequest(ServerActionType type, int fd, Args... args):
                 Type(type), TargetFD(fd) {
             stringstream ss{};
-            ((ss << args << " "), ...);
+            ((ss << args), ...);
             Data = ss.str();
         }
 
@@ -111,9 +111,9 @@ namespace src::classes::server {
 
         void Start();
         void Stop();
-    private:
         atomic<Hash> msgCount;
-        shared_ptr<atomic<bool>> Status;
+        shared_ptr<atomic<bool>> sharedStatus;
+        weak_ptr<atomic<bool>> Status;
         shared_ptr<mutex> m_Connections;
         shared_ptr<mutex> m_Accounts;
         shared_ptr<mutex> m_Rooms;
@@ -121,6 +121,7 @@ namespace src::classes::server {
         shared_ptr<mutex> m_Messages;
         shared_ptr<mutex> m_Responses;
         shared_ptr<mutex> m_Requests;
+    private:
 
         void PushConnection(shared_ptr<Client> client);
         shared_ptr<Client> GetConnection(long long i);

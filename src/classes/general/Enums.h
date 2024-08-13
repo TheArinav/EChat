@@ -21,6 +21,7 @@ namespace src::classes::general{
         SendMessage,
         TerminateConnection
     };
+
 }
 #endif //ECHAT_ENUMS_H
 

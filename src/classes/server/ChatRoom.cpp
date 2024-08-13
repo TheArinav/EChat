@@ -87,12 +87,21 @@ namespace src::classes::server {
         }
         {
             lock_guard<mutex> guard(*m_Members);
-            for(auto& cur : Members)
-                if(cur->ID!=sID)
+            for(auto& cur : Members) {
+                if (cur->ID != sID) {
+                    stringstream ss{};
+                    ss << ID
+                       << " "
+                       << sID
+                       << " "
+                       << p_msg;
                     cur->Connection->EnqueueResponse(ClientResponse(
                             ClientActionType::MessageIn,
                             cur->Connection->FileDescriptor,
-                            p_msg).Serialize());
+                            ss.str()).Serialize());
+                    cur->Connection->Write();
+                }
+            }
         }
     }
 } // server

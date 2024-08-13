@@ -1,7 +1,3 @@
-//
-// Created by ariel on 8/5/2024.
-//
-
 #include "ServerConnectionTest.h"
 
 using namespace std;

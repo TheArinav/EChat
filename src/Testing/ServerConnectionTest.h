@@ -1,7 +1,3 @@
-//
-// Created by ariel on 8/5/2024.
-//
-
 #ifndef EPOLLCHAT_SERVERCONNECTIONTEST_H
 #define EPOLLCHAT_SERVERCONNECTIONTEST_H
 

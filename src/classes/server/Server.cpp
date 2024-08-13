@@ -1,5 +1,4 @@
 #include "Server.h"
-
 #include <utility>
 #include <functional>
 
@@ -12,21 +11,39 @@ namespace src::classes::server {
 
     Server::~Server() {
         Stop();
-        if (ServerThread && ServerThread->joinable())
+        if (ServerThread && ServerThread->joinable()) {
             ServerThread->join();
+        }
         delete ServerThread;
+
+        // Clean up all shared_ptr containers
+        Connections.clear();
+        Accounts.clear();
+        Rooms.clear();
+        Messages.clear();
     }
 
-    Server::Server(string name) :
-            ServerName(move(name)) {
+    Server::Server(string name) : ServerName(move(name)) {
         Setup();
     }
 
     void Server::Start() {
-        Status->store(true);
-        ServerThread = new thread([this]() -> void {
-            vector<EpollEvent> events(MAX_EVENTS);
-            while (Status->load()) {
+        sharedStatus = Status.lock();  // Lock the weak pointer to get a shared_ptr
+        if (!sharedStatus) {
+            std::cerr << "Status is not available. Cannot start server." << std::endl;
+            return;
+        }
+
+        sharedStatus->store(true);
+        ServerThread = new std::thread([this, weakStatus = Status]() -> void {
+            std::vector<EpollEvent> events(MAX_EVENTS);
+
+            while (true) {
+                sharedStatus = weakStatus.lock();  // Re-lock to check if it's still valid
+                if (!sharedStatus || !sharedStatus->load()) {
+                    break;
+                }
+
                 int n = epoll_wait(EpollFD, events.data(), MAX_EVENTS, -1);
                 if (errno == EINTR)
                     continue;
@@ -37,7 +54,6 @@ namespace src::classes::server {
 
                 for (int i = 0; i < n; ++i) {
                     if (events[i].data.fd == FileDescriptor) {
-                        // Handle new connection
                         sockaddr_storage addr{};
                         socklen_t addr_len = sizeof(addr);
                         int new_fd = accept(FileDescriptor, (sockaddr *) &addr, &addr_len);
@@ -46,7 +62,6 @@ namespace src::classes::server {
                             continue;
                         }
 
-                        // Set non-blocking
                         int flags = fcntl(new_fd, F_GETFL, 0);
                         if (flags == -1) {
                             perror("fcntl");
@@ -60,9 +75,7 @@ namespace src::classes::server {
                             continue;
                         }
 
-                        // Add new client to epoll
-                        EpollEvent event;
-                        memset(&event, 0, sizeof(event));
+                        EpollEvent event{};
                         event.data.fd = new_fd;
                         event.events = EPOLLIN | EPOLLET;
                         if (epoll_ctl(EpollFD, EPOLL_CTL_ADD, new_fd, &event) == -1) {
@@ -71,29 +84,25 @@ namespace src::classes::server {
                             continue;
                         }
 
-                        auto client = make_shared<Client>(new_fd, addr, true);
-                        PushConnection(move(client));
+                        auto client = std::make_shared<Client>(new_fd, addr, true);
+                        PushConnection(std::move(client));
                     } else {
-                        // Handle client data
                         auto client = GetClientByFd(events[i].data.fd);
                         if (!client) continue;
 
                         ssize_t bytes_read = client->Read();
                         if (bytes_read <= 0) {
                             if (bytes_read == 0) {
-                                // Handle it gracefully if the client explicitly requests to terminate the connection
-                                cerr << "Received zero bytes, waiting for explicit termination request." << endl;
+                                std::cerr << "Received zero bytes, waiting for explicit termination request." << std::endl;
                             } else if (errno != EAGAIN && errno != EWOULDBLOCK) {
-                                // Handle error in recv() if it's not just a non-blocking issue
                                 perror("Error in recv()");
                                 close(client->FileDescriptor);
                                 RemoveConnection(client->FileDescriptor);
                             }
                             continue;
                         } else {
-                            // Handle normal data processing
-                            string buff = string(client->ReadBuffer.begin(), client->ReadBuffer.end());
-                            auto curReq = make_shared<ServerRequest>(ServerRequest::Deserialize(buff));
+                            std::string buff = std::string(client->ReadBuffer.begin(), client->ReadBuffer.end());
+                            auto curReq = std::make_shared<ServerRequest>(ServerRequest::Deserialize(buff));
                             auto requesterID = client->ID;
                             PushRequest(requesterID, curReq);
                         }
@@ -106,9 +115,9 @@ namespace src::classes::server {
     }
 
     void Server::Setup() {
-        Status = make_shared<atomic<bool>>();
-        Status->store(false);
         FileDescriptor = -1;
+        sharedStatus = make_shared<atomic<bool>>(false);
+        Status = sharedStatus;
         ServerThread = nullptr;
         msgCount = 0;
         m_Connections = make_shared<mutex>();
@@ -189,6 +198,18 @@ namespace src::classes::server {
         }
     }
 
+    void Server::Stop() {
+        sharedStatus = Status.lock();
+        if (sharedStatus) {
+            sharedStatus->store(false);
+        }
+        if (ServerThread && ServerThread->joinable()) {
+            ServerThread->join();
+        }
+    }
+
+
+
     void Server::EnactRespond() {
         function<bool()> isRequestsEmpty = [this]() -> bool {
             {
@@ -198,6 +219,7 @@ namespace src::classes::server {
         };
         while (!isRequestsEmpty()) {
             //region Setup
+            bool closeFlag = false;
             auto current = PopRequest();
             Hash ConnectionID = get<0>(current);
             shared_ptr<Account> requester = nullptr;
@@ -273,6 +295,8 @@ namespace src::classes::server {
                     string key;
                     ss_data >> id;
                     getline(ss_data, key);
+                    key=key.substr(1); //Remove space in beginning
+                    key=key.substr(0,key.size()-1); //Remove space in end
                     //endregion
 
                     shared_ptr<Account> targetAccount = nullptr;
@@ -294,11 +318,15 @@ namespace src::classes::server {
 
                     //region Move the connection to the target account:
                     targetAccount->Connection = connection;
+                    targetAccount->Connection->IsGuest = false;
                     connection->SetOwner(make_shared<Account>(*targetAccount));
                     //endregion
 
-                    ss_response << ServerName << " "
-                                << "You were successfully logged in";
+                    ss_response << targetAccount->DisplayName
+                                << " | "
+                                << ServerName
+                                << " "
+                                << "'You were successfully logged in'";
                     ss_log << "User ("
                            << targetAccount->DisplayName
                            << "#"
@@ -310,7 +338,7 @@ namespace src::classes::server {
                 }
                 case ServerActionType::LogoutAccount: {
                     if (isGuest) { //Check if guest
-                        ss_response << "Nothing to do; a guest cannot logout.";
+                        ss_response << "'Nothing to do; a guest cannot logout.'";
                         ss_log << "Guest with connection ID '#"
                                << connection->ID
                                << "' has requested to logout. Request Denied; Aborted.";
@@ -324,6 +352,8 @@ namespace src::classes::server {
                     string key;
                     ss_data >> id;
                     getline(ss_data, key);
+                    key=key.substr(1); //Remove space in beginning
+                    key=key.substr(0,key.size()-1); //Remove space in end
                     //endregion
 
                     if (!verifyIdentity(requester, id, key)) {
@@ -340,6 +370,7 @@ namespace src::classes::server {
                     //region Disconnect client from the account
                     requester->Connection = nullptr;
                     connection->SetOwner(nullptr);
+                    connection->IsGuest= true;
                     //endregion
 
                     ss_response << "'You were successfully logged out of the server.'";
@@ -352,19 +383,14 @@ namespace src::classes::server {
                     break;
                 }
                 case ServerActionType::TerminateConnection: {
-                    ss_response << "'Connection terminated by client request.'";
+                    cout << "\nConnection terminated by client request." << endl;
+                    ss_response << "'Connection terminated'";
                     ss_log << "Client (" << connection->ID
                            << ") requested to terminate the connection. Connection closed.";
-                    responseType = general::ClientActionType::InformSuccess;
-
-                    // Send response and close the connection
-                    PushResponse(connection->ID, make_shared<ClientResponse>(responseType, connection->FileDescriptor,
-                                                                             ss_response.str()));
-                    close(connection->FileDescriptor);
-                    RemoveConnection(connection->FileDescriptor);
-                    break;
+                    responseType=general::ClientActionType::InformSuccess;
+                    closeFlag= true;
+                    goto Respond;
                 }
-
                 case ServerActionType::RegisterAccount: {
                     if (!isGuest) {
                         ss_response << "'To register a new account, you must first logout of the current one'";
@@ -382,9 +408,9 @@ namespace src::classes::server {
                     string name, key;
                     {   //Make sure temporary vars go out of scope asap.
                         string::size_type separator = request->Data.find('|');
-                        name = request->Data.substr(1, separator - 2);
-                        key = request->Data.substr(separator + 1);
-                        key = key.substr(1, key.size() - 3);
+                        name = request->Data.substr(1, separator - 2 /* Because of the residual space between the end of name and '|' */);
+                        key = request->Data.substr(separator + 2 /* Because of the residual space between the end of '| 'and start of key */);
+                        key = key.substr(0,key.size()-1); //Remove residual space at end of key
                     }
                     //endregion
 
@@ -428,8 +454,9 @@ namespace src::classes::server {
                         string reminder;
                         getline(ss_data, reminder);
                         string::size_type separator = reminder.find('|');
-                        name = reminder.substr(0, separator);
-                        cKey = reminder.substr(separator + 1);
+                        cKey = reminder.substr(1, separator-1);
+                        name = reminder.substr(separator + 1);
+                        name = name.substr(0,name.size()-1);
                     }
                     //endregion
 
@@ -461,11 +488,8 @@ namespace src::classes::server {
                         target = GetRoom(-1);
                     }
 
-                    ss_response << target->DisplayName
-                                << "#"
-                                << target->ID
-                                << " "
-                                << "'The chatroom was created successfully.'";
+                    ss_response << target->ID
+                                << " 'The chatroom was created successfully.'";
                     ss_log << "User ("
                            << requester->DisplayName
                            << "#"
@@ -493,6 +517,8 @@ namespace src::classes::server {
                     string reqKey;
                     ss_data >> reqID >> roomID >> memID;
                     getline(ss_data, reqKey);
+                    reqKey=reqKey.substr(1); //Remove space in beginning
+                    reqKey=reqKey.substr(0,reqKey.size()-1); //Remove space in end
                     //endregion
 
                     if (!verifyIdentity(requester, reqID, reqKey)) {
@@ -541,6 +567,8 @@ namespace src::classes::server {
                         goto Respond;
                     }
 
+                    targetRoom->PushMember(requester);
+
                     shared_ptr<Account> targetAccount = nullptr;
                     { // Find user account to add as member
                         long long accInd;
@@ -574,6 +602,20 @@ namespace src::classes::server {
                            << targetRoom->ID
                            << "]";
                     responseType = general::ClientActionType::InformSuccess;
+
+                    //region inform new member
+                    {
+                        stringstream ss{};
+                        ss << targetRoom->ID
+                           << " "
+                           << targetRoom->DisplayName;
+                        auto inmcr = ClientResponse(ClientActionType::JoinRoom,
+                                                    targetAccount->Connection->FileDescriptor,
+                                                    ss.str());
+                        targetAccount->Connection->EnqueueResponse(inmcr.Serialize());
+                        targetAccount->Connection->Write();
+                    }
+                    //endregion
                     break;
                 }
                 case ServerActionType::RemoveMember: {
@@ -692,6 +734,19 @@ namespace src::classes::server {
                            << targetRoom->ID
                            << "]";
                     responseType = general::ClientActionType::InformSuccess;
+                    //region inform ex member
+                    {
+                        stringstream ss{};
+                        ss << targetRoom->ID
+                           << " "
+                           << targetRoom->DisplayName;
+                        auto iemcr = ClientResponse(ClientActionType::LeaveRoom,
+                                                    targetAccount->Connection->FileDescriptor,
+                                                    ss.str());
+                        targetAccount->Connection->EnqueueResponse(iemcr.Serialize());
+                        targetAccount->Connection->Write();
+                    }
+                    //endregion
                     break;
                 }
                 case ServerActionType::SendMessage:
@@ -713,8 +768,9 @@ namespace src::classes::server {
                         string reminder;
                         getline(ss_data, reminder);
                         string::size_type separator = reminder.find('|');
-                        cKey = reminder.substr(0, separator);
+                        cKey = reminder.substr(1, separator-1);
                         msg = reminder.substr(separator + 1);
+                        msg = msg.substr(0,msg.size()-1);
                     }
                     //endregion
                     if (!verifyIdentity(requester, cID, cKey)) {
@@ -731,7 +787,7 @@ namespace src::classes::server {
                                << cKey
                                << "}. Request details {type='Send message in room', RoomID = '"
                                << rID
-                               << "Message= "
+                               << "' Message= '"
                                << msg
                                << "'}. Request Denied; Aborted";
                         responseType = general::ClientActionType::InformFailure;
@@ -790,16 +846,19 @@ namespace src::classes::server {
             Respond:
             {
                 LogMessage(ss_log.str());
-                auto s_resp = ClientResponse(responseType, connection->FileDescriptor, ss_response.str()).Serialize();
-                connection->EnqueueResponse(s_resp);
-                connection->Write();
+                if(responseType != general::ClientActionType::NONE){
+                    auto s_resp = ClientResponse(responseType, connection->FileDescriptor,
+                                                 ss_response.str()).Serialize();
+                    connection->EnqueueResponse(s_resp);
+                    connection->Write();
+                    if(closeFlag){
+                        close(connection->FileDescriptor);
+                        RemoveConnection(connection->FileDescriptor);
+                    }
+                }
             }
             //endregion
         }
-    }
-
-    void Server::Stop() {
-        Status->store(false);
     }
 
     void Server::LogMessage(const string &msg) {
@@ -1019,7 +1078,7 @@ namespace src::classes::general {
     string ServerRequest::Serialize() const {
         stringstream result{};
         result << DELIMITER_START << " "
-               << static_cast<int>(TargetFD) << " "
+               << static_cast<int>(Type) << " "
                << TargetFD << " "
                << DATA_START << " "
                << Data << " "
@@ -1027,6 +1086,7 @@ namespace src::classes::general {
                << DELIMITER_END;
         return result.str();
     }
+
 
     ServerRequest::ServerRequest() = default;
 

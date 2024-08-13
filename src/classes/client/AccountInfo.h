@@ -1,20 +1,25 @@
-//
-// Created by IMOE001 on 7/31/2024.
-//
-
 #ifndef EPOLLCHAT_ACCOUNTINFO_H
 #define EPOLLCHAT_ACCOUNTINFO_H
 
-namespace src {
-    namespace classes {
-        namespace client {
+#include <string>
+#include <vector>
 
-            class AccountInfo {
+#include "ChatRoomInfo.h"
+#include "ClientInfo.h"
+#include "../general/Enums.h"
+#include "../general/Constants.h"
 
-            };
+using namespace std;
+using namespace src::classes::general;
 
-        } // src
-    } // classes
+namespace src::classes::client {
+    class AccountInfo {
+    public:
+        Hash ID;
+        string Name;
+        string Key;
+        vector<ChatRoomInfo> Rooms;
+        ClientInfo ConnectionInfo;
+    };
 } // client
-
 #endif //EPOLLCHAT_ACCOUNTINFO_H

@@ -5,16 +5,26 @@
 #ifndef EPOLLCHAT_CHATROOMINFO_H
 #define EPOLLCHAT_CHATROOMINFO_H
 
-namespace src {
-    namespace classes {
-        namespace client {
+#include "../general/Enums.h"
+#include "../general/Constants.h"
 
-            class ChatRoomInfo {
+#include <string>
+#include <vector>
+#include <tuple>
 
-            };
+using namespace std;
+using namespace src::classes::general;
 
-        } // src
-    } // classes
+namespace src::classes::client {
+    class ChatRoomInfo {
+    public:
+        Hash ID{};
+        string DisplayName;
+        vector<tuple<Hash,string>> Messages;
+        ChatRoomInfo()=default;
+        ChatRoomInfo(Hash id, string dn):ID(id),DisplayName(move(dn)){}
+    };
+
 } // client
 
 #endif //EPOLLCHAT_CHATROOMINFO_H
